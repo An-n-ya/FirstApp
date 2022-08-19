@@ -8,6 +8,7 @@
 import UIKit
 
 class ViewController: UIViewController {
+    var currentValue: Int = 1
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -15,9 +16,10 @@ class ViewController: UIViewController {
     }
     
     @IBAction func showAlert() {
+        let message = "现在滑动块的值是：\(currentValue)"
         let alert = UIAlertController(
             title: "你好！",
-            message: "这是我的第一个App",
+            message: message,
             preferredStyle: .alert)
         
         let action = UIAlertAction(
@@ -29,7 +31,10 @@ class ViewController: UIViewController {
         alert.addAction(action)
         present(alert, animated: true, completion: nil)
     }
-            
+    
+    @IBAction func sliderMoved(_ slider: UISlider) {
+        currentValue = lroundf(slider.value)
+    }
 
 
 }
