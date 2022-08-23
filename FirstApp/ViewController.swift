@@ -17,8 +17,8 @@ class ViewController: UIViewController {
     @IBOutlet var slider: UISlider!
     @IBOutlet var target: UILabel!
     
-    func updateScore() {
-        score += 100 - abs(currentValue - targetValue)
+    func updateScore(points: Int) {
+        score += points
         round += 1
         scoreLabel.text = String(score)
         roundLabel.text = "\(round)"
@@ -30,39 +30,63 @@ class ViewController: UIViewController {
         slider.value = Float(currentValue)
         target.text = String(targetValue) // 或者是"\(targetValue)"
     }
+    
+    @IBAction func startNewGame() {
+        score = 0
+        round = 0
+        scoreLabel.text = String(score)
+        roundLabel.text = "\(round)"
+        reset()
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        scoreLabel.text = String(score)
-        roundLabel.text = String(round)
-        reset()
-        // Do any additional setup after loading the view.
+        startNewGame()
     }
     
     @IBAction func showAlert() {
-        let message = "现在滑动块的值是：\(currentValue)" + "\n目标值为：\(targetValue)"
+        
+        let title: String
+        let difference = abs(currentValue - targetValue)
+        var points = 100 - difference
+        if difference == 0 {
+            title = "完美！"
+            points += 100
+        } else if difference < 5 {
+            title = "就差一点点"
+            if difference == 1 {
+                points += 50
+            }
+        } else if difference < 10 {
+            title = "不错"
+        } else {
+            title = "差太远了！"
+        }
+        let message = "你的分数为：\(100 - difference)"
+        
         let alert = UIAlertController(
-            title: "你好！",
+            title: title,
             message: message,
             preferredStyle: .alert)
         
         let action = UIAlertAction(
-            title: "这可太棒了！",
+            title: "好",
             style: .default,
-            handler: nil
+            handler: { _ in
+                self.updateScore(points: points)
+                self.reset()
+            }
         )
         
         alert.addAction(action)
         present(alert, animated: true, completion: nil)
         
-        updateScore()
-        reset()
+//        updateScore(points: points)
+//        reset()
     }
     
     @IBAction func sliderMoved(_ slider: UISlider) {
         currentValue = lroundf(slider.value)
     }
-
-
 }
 
